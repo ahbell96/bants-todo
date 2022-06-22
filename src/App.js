@@ -2,7 +2,7 @@ import "./App.css";
 import { Box, Container, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Header } from "./components/header";
-import { Form } from "./components/form";
+import { TodoForm } from "./components/todoForm";
 import { Content } from "./components/content";
 
 const App = () => {
@@ -71,7 +71,7 @@ const App = () => {
         gap={"5em"}
       >
         <Header />
-        <Form
+        <TodoForm
           data={data}
           setData={setData}
           establishSnackbar={establishSnackbar}
