@@ -8,6 +8,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import FormControl from "@mui/material/FormControl";
 import { TextField } from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 export const UpdateDialog = ({
   open,
@@ -16,38 +17,64 @@ export const UpdateDialog = ({
   item,
   updateItem,
 }) => {
-  const [localText, setLocalText] = useState("");
+  const [localText, setLocalText] = useState(item.text);
 
   return (
     <>
       <Dialog fullWidth={true} open={open} onClose={handleClose}>
-        <DialogTitle>Optional sizes</DialogTitle>
+        <DialogTitle>Update item</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            You can set my maximum width and whether to adapt or not.
-          </DialogContentText>
-          <Box
-            noValidate
-            component="form"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              m: "auto",
-              width: "fit-content",
+          <DialogContentText>Update your todo item.</DialogContentText>
+          <Formik
+            initialValues={{ id: item.id, todo: item.text }}
+            validate={(values) => {
+              console.log("values on validate : ", values);
+              const errors = {};
+              if (!values.todo) {
+                errors.todo = "Required";
+              }
+              return errors;
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log("values in update : ", values);
+              if (values.todo.length > 0) {
+                console.log("value.todo : ", values.todo);
+                updateItem(values.id, values.todo);
+              }
             }}
           >
-            <FormControl sx={{ mt: 2, minWidth: 120 }}>
-              <TextField
-                defaultValue={item.text}
-                onChange={(e) => setLocalText(e.target.value)}
-              />
-            </FormControl>
-          </Box>
+            {/* <Box
+              noValidate
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                m: "auto",
+                width: "fit-content",
+              }}
+            >
+              <FormControl sx={{ mt: 2, minWidth: 120 }}>
+                <TextField
+                  defaultValue={item.text}
+                  onChange={(e) => setLocalText(e.target.value)}
+                />
+              </FormControl>
+            </Box> */}
+            {({ isSubmitting }) => (
+              <Form>
+                <Field type="text" name="todo" defaultValue={item.text} />
+                <ErrorMessage name="todo" component="div" />
+                <Button type="submit" disabled={isSubmitting}>
+                  Submit
+                </Button>
+              </Form>
+            )}
+          </Formik>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={() => updateItem(item.id, localText)}>Save</Button>
           <Button onClick={handleClose}>Close</Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     </>
   );
